@@ -12,3 +12,9 @@
   Old: 2e160609e06e299add385c5bcdc0ab4ede2c8df89ff3173e3de26de7a374811c
   New: 26bfd604e1c9f015c9150a4070beffa4723e978db648b5bbe816ae6c0bad3aff
 2025/11/11 11:41:54 [🔍] Watching directory: ./watched
+2025/11/11 19:04:53 [🔍] Watching directory: ./watched
+2025/11/11 19:05:35 [ADDED] watched\text.txt | Hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+2025/11/11 19:05:36 [MODIFIED] watched\text.txt
+  Old: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  New: 27c7bfb7e7b04050773d204035725bb89bc8357bc1d6255c307c6c8295a8c478
+2025/11/11 19:06:19 [DELETED] watched\text.txt

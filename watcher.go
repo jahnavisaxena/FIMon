@@ -4,10 +4,43 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
 
+// ForensicEvent represents a single file integrity event
+type ForensicEvent struct {
+	Timestamp string `json:"timestamp"`
+	EventType string `json:"event_type"`
+	FilePath  string `json:"file_path"`
+	OldHash   string `json:"old_hash,omitempty"`
+	NewHash   string `json:"new_hash,omitempty"`
+}
+
+// SaveForensicEvent appends a new event to forensic_log.json
+func SaveForensicEvent(event ForensicEvent) {
+	reportDir := "reports"
+	reportFile := reportDir + "/forensic_log.json"
+
+	os.MkdirAll(reportDir, 0755)
+
+	var events []ForensicEvent
+
+	// Load existing events if the file exists
+	if data, err := os.ReadFile(reportFile); err == nil && len(data) > 0 {
+		_ = json.Unmarshal(data, &events)
+	}
+
+	// Append new event
+	events = append(events, event)
+
+	// Write back
+	data, _ := json.MarshalIndent(events, "", "  ")
+	os.WriteFile(reportFile, data, 0644)
+}
+
+// WatchDirectory monitors and logs file integrity events
 func WatchDirectory(cfg Config, baseline map[string]string, baselineFile string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -32,6 +65,13 @@ func WatchDirectory(cfg Config, baseline map[string]string, baselineFile string)
 				baseline[path] = hash
 				log.Printf("[ADDED] %s | Hash: %s\n", path, hash)
 				SaveBaseline(baseline, baselineFile)
+
+				SaveForensicEvent(ForensicEvent{
+					Timestamp: time.Now().Format(time.RFC3339),
+					EventType: "ADDED",
+					FilePath:  path,
+					NewHash:   hash,
+				})
 			}
 
 			if event.Op&fsnotify.Write == fsnotify.Write {
@@ -41,23 +81,33 @@ func WatchDirectory(cfg Config, baseline map[string]string, baselineFile string)
 					log.Printf("[MODIFIED] %s\n  Old: %s\n  New: %s\n", path, oldHash, newHash)
 					baseline[path] = newHash
 					SaveBaseline(baseline, baselineFile)
+
+					SaveForensicEvent(ForensicEvent{
+						Timestamp: time.Now().Format(time.RFC3339),
+						EventType: "MODIFIED",
+						FilePath:  path,
+						OldHash:   oldHash,
+						NewHash:   newHash,
+					})
 				}
 			}
 
 			if event.Op&fsnotify.Remove == fsnotify.Remove {
 				log.Printf("[DELETED] %s\n", path)
+				oldHash := baseline[path]
 				delete(baseline, path)
 				SaveBaseline(baseline, baselineFile)
+
+				SaveForensicEvent(ForensicEvent{
+					Timestamp: time.Now().Format(time.RFC3339),
+					EventType: "DELETED",
+					FilePath:  path,
+					OldHash:   oldHash,
+				})
 			}
 
 		case err := <-watcher.Errors:
 			log.Println("Error:", err)
 		}
 	}
-}
-
-// SaveBaseline updates the baseline.json file after changes
-func SaveBaseline(baseline map[string]string, baselineFile string) {
-	data, _ := json.MarshalIndent(baseline, "", "  ")
-	os.WriteFile(baselineFile, data, 0644)
 }

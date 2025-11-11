@@ -1,0 +1,21 @@
+[
+  {
+    "timestamp": "2025-11-11T19:05:35+05:30",
+    "event_type": "ADDED",
+    "file_path": "watched\\text.txt",
+    "new_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "timestamp": "2025-11-11T19:05:36+05:30",
+    "event_type": "MODIFIED",
+    "file_path": "watched\\text.txt",
+    "old_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "new_hash": "27c7bfb7e7b04050773d204035725bb89bc8357bc1d6255c307c6c8295a8c478"
+  },
+  {
+    "timestamp": "2025-11-11T19:06:19+05:30",
+    "event_type": "DELETED",
+    "file_path": "watched\\text.txt",
+    "old_hash": "27c7bfb7e7b04050773d204035725bb89bc8357bc1d6255c307c6c8295a8c478"
+  }
+]

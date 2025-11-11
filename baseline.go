@@ -35,3 +35,21 @@ func LoadBaseline(baselinePath string) map[string]string {
 	json.NewDecoder(file).Decode(&baseline)
 	return baseline
 }
+
+// SaveBaseline writes the updated baseline data to a JSON file
+func SaveBaseline(baseline map[string]string, baselinePath string) {
+	data, err := json.MarshalIndent(baseline, "", "  ")
+	if err != nil {
+		fmt.Println("Error encoding baseline:", err)
+		return
+	}
+
+	err = os.WriteFile(baselinePath, data, 0644)
+	if err != nil {
+		fmt.Println("Error writing baseline file:", err)
+		return
+	}
+
+	fmt.Println("[✔] Baseline updated:", baselinePath)
+}
+
