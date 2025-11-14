@@ -4,7 +4,8 @@
   "change_threshold": 10,
   "alerts": {
     "enable_telegram": true,
-    "telegram_bot_token": "8566768849:AAHSwqx5qhtwS7ViNHVRU-fWUDANzdqMR-Q",
-    "telegram_chat_id": "6450725141"
+    "telegram_bot_token": "XX",
+    "telegram_chat_id": "XX"
   }
 }
+
